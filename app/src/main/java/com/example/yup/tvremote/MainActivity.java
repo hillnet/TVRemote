@@ -14,10 +14,13 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
     }
 
+
+
     public void onClick(View v) {
         final int id = v.getId();
         switch (id) {
             case R.id.volUp:
+                transmit(int carrierFrequency, int[] pattern);
                 System.out.println("Volume Up");
 
                 break;
@@ -50,6 +53,11 @@ public class MainActivity extends AppCompatActivity {
         switch (id) {
             case R.id.ok:
                 System.out.println("Ok");
+                break;
+        }
+        switch (id) {
+            case R.id.power:
+                System.out.println("Power");
                 break;
         }
 
