@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         final int id = v.getId();
         switch (id) {
             case R.id.volUp:
-//                transmit( int carrierFrequency, int[] pattern);
                 System.out.println("Volume Up");
                 break;
             case R.id.voldown:
