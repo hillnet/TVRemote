@@ -1,18 +1,20 @@
 package com.example.yup.tvremote;
 
 import android.hardware.ConsumerIrManager;
+import android.hardware.ConsumerIrManager.CarrierFrequencyRange;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
-import android.hardware.ConsumerIrManager.CarrierFrequencyRange;
 import android.view.View.OnClickListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
     ConsumerIrManager remoteManager;
-    int tvFrequency = 0;
+    final static String POWER = "0000 006d 0022 0003 00a9 00a8 0015 003f 0015 003f 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 003f 0015 003f 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0040 0015 0015 0015 003f 0015 003f 0015 003f 0015 003f 0015 003f 0015 003f 0015 0702 00a9 00a8 0015 0015 0015 0e6e";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,6 +23,23 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
 
     }
 
+    private IRCommand hex2ir(final String irData){
+        List<String> list = new ArrayList<String>(Arrays.asList(irData.split(" ")));
+        list.remove(0);
+        int frequency = Integer.parseInt(list.remove(0),16);
+        list.remove(0);
+        list.remove(0);
+        frequency = (int) (1000000 / (frequency * 0.241246));
+        int pulses = 1000000 / frequency;
+        int count;
+
+        int[] pattern = new int[list.size()];
+        for (int j = 0 ; j < list.size(); j++){
+            count = Integer.parseInt(list.get(j), 16);
+            pattern[j] = count * pulses;
+        }
+        return new IRCommand(frequency, pattern);
+    }
 
 
     public void onClick(View v) {
@@ -41,8 +60,11 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
                 System.out.println("Down");
                 break;
             case R.id.setup:
-                remoteSetup();
+                IRCommand command = hex2ir(POWER);
+                remoteManager.transmit(command.freq, command.pattern);
                 System.out.println("Setup");
+                Log.i("Testing", "Frequency " + command.freq);
+                Log.i("Testing", "Pattern " + Arrays.toString(command.pattern));
                 break;
             case R.id.ok:
                 System.out.println("Ok");
@@ -76,5 +98,15 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
 
 
+
+        private class IRCommand {
+            private final int freq;
+            private final int[] pattern;
+
+            private IRCommand(int freq, int[] pattern){
+                this.freq = freq;
+                this.pattern = pattern;
+            }
+        }
 }
 
