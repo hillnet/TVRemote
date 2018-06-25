@@ -1,7 +1,6 @@
 package com.example.yup.tvremote;
 
 import android.hardware.ConsumerIrManager;
-import android.hardware.ConsumerIrManager.CarrierFrequencyRange;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -14,6 +13,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnClickListener {
     ConsumerIrManager remoteManager;
+//    Power code from irdb.tk search for Samsung
     final static String POWER = "0000 006d 0022 0003 00a9 00a8 0015 003f 0015 003f 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 003f 0015 003f 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 003f 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0015 0040 0015 0015 0015 003f 0015 003f 0015 003f 0015 003f 0015 003f 0015 003f 0015 0702 00a9 00a8 0015 0015 0015 0e6e";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +24,8 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
     }
 
     private IRCommand hex2ir(final String irData){
-        List<String> list = new ArrayList<String>(Arrays.asList(irData.split(" ")));
+//        Converts the hex information and makes an IRCommand object to store the pattern and frequency.
+        List<String> list = new ArrayList<>(Arrays.asList(irData.split(" ")));
         list.remove(0);
         int frequency = Integer.parseInt(list.remove(0),16);
         list.remove(0);
@@ -59,18 +60,16 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
             case R.id.channelDown:
                 System.out.println("Down");
                 break;
-            case R.id.setup:
-                IRCommand command = hex2ir(POWER);
-                remoteManager.transmit(command.freq, command.pattern);
-                System.out.println("Setup");
-                Log.i("Testing", "Frequency " + command.freq);
-                Log.i("Testing", "Pattern " + Arrays.toString(command.pattern));
-                break;
             case R.id.ok:
                 System.out.println("Ok");
                 break;
             case R.id.power:
                 System.out.println("Power");
+                IRCommand powerCommand = hex2ir(POWER);
+                remoteManager.transmit(powerCommand.freq, powerCommand.pattern);
+                System.out.println("Setup");
+                Log.i("Testing", "Frequency " + powerCommand.freq);
+                Log.i("Testing", "Pattern " + Arrays.toString(powerCommand.pattern));
                 break;
             case R.id.dpadUp:
                 System.out.println("Arrow Up");
@@ -88,14 +87,6 @@ public class MainActivity extends AppCompatActivity implements OnClickListener {
         }
 
 
-        public void remoteSetup(){
-        CarrierFrequencyRange[] frequencies = remoteManager.getCarrierFrequencies();
-        Log.i("Testing", Integer.toString(frequencies.length));
-        CarrierFrequencyRange frequency = frequencies[0];
-        Log.i("Testing", Integer.toString(frequency.getMaxFrequency()));
-        Log.i("Testing", Integer.toString(frequency.getMinFrequency()));
-
-        }
 
 
 

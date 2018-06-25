@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">TVRemote</string>
+    <string name="up">up</string>
+    <string name="down">Down</string>
+    <string name="vol_up">Vol Up</string>
+    <string name="vol_down">Vol down</string>
+    <string name="ok">OK</string>
+    <string name="pwr">Pwr</string>
+    <string name="left">Left</string>
+    <string name="right">Right</string>
 </resources>
